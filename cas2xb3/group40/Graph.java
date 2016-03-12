@@ -47,14 +47,14 @@ public class Graph {
         //Returns the number of edges in the graph.
         return nE;
     }
-    
+
     private Intersection find(int id){
     	for (Intersection w: this.all){
     		if (w.getID() == id) return w;
     	}
     	return null;
     }
-    
+
     private void checkAdd(Intersection v){
     	for(Intersection w : this.all){
     		if (v.getID() == w.getID()) return;
@@ -78,15 +78,15 @@ public class Graph {
         }
         return s;
     }
-	
+
     public static void main(String[] args){
     	Graph s = new Graph(3);
-    	Intersection i1 = new Intersection("ABC", 1, 2, 0);
-    	Intersection i2 = new Intersection("DEF", 1, 3, 1);
-    	Intersection i3 = new Intersection("GHI", 4, 5, 2);
+    	Intersection i1 = new Intersection("ABC", 1, 2);
+    	Intersection i2 = new Intersection("DEF", 1, 3);
+    	Intersection i3 = new Intersection("GHI", 4, 5);
     	s.addEdge(i1, i2);
     	s.addEdge(i2, i3);
     	System.out.println(s);
     }
-	
+
 }
