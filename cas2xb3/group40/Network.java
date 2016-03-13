@@ -1,32 +1,30 @@
 package cas2xb3.group40;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Scanner;
 
-public class Graph {
-	private ArrayList<ArrayList<Intersection>> adj;
-	private ArrayList<Intersection> all;
-    private int nV = 0;
-    private int nE = 0;
+public class Network {
 
-    public Graph(){
-        this.adj = new ArrayList<ArrayList<Intersection>>();
+    private Intersection[] intsecs;
+    private int nV;
+    private int nE;
+
+    public Network(int cap){
+        intsecs = new Intersection[cap];
     }
 
-    public Graph(int nV){
-        this.adj = new ArrayList<ArrayList<Intersection>>();
-        this.all = new ArrayList<Intersection>();
-        for (int i = 0; i < nV; ++i) {
-            this.adj.add(new ArrayList<Intersection>());
-            this.nV ++;
-        }
+    public void addIntersection(Intersection i) {
+        intsecs[i.getId()] = i;
+        nV++;
     }
 
+    public Intersection getIntersection(int i) {
+        return intsecs[i];
+    }
+
+    /*
     public void addEdge(Intersection v, Intersection w){
         //Add an edge from v to w (symmetrically).
     	checkAdd(v);
     	checkAdd(w);
-    	this.adj.get(v.getID()).add(w);
+    	this.adj.get(v.getId()).add(w);
     	if (v != w){
     		this.adj.get(w.getID()).add(v);
     	}
@@ -37,6 +35,7 @@ public class Graph {
         //Returns all adjacent vertices of v.
         return (Iterable<Intersection>) this.adj.get(id).clone();
     }
+    */
 
     public int V(){
         //Returns the number of vertices in the graph.
@@ -48,9 +47,10 @@ public class Graph {
         return nE;
     }
 
-    private Intersection find(int id){
-    	for (Intersection w: this.all){
-    		if (w.getID() == id) return w;
+    /*
+    private Intersection getIntersection(String streets){
+    	for (Intersection w: intsecs){
+    		if (w.getId() == id) return w;
     	}
     	return null;
     }
@@ -78,15 +78,6 @@ public class Graph {
         }
         return s;
     }
-
-    public static void main(String[] args){
-    	Graph s = new Graph(3);
-    	Intersection i1 = new Intersection("ABC", 1, 2);
-    	Intersection i2 = new Intersection("DEF", 1, 3);
-    	Intersection i3 = new Intersection("GHI", 4, 5);
-    	s.addEdge(i1, i2);
-    	s.addEdge(i2, i3);
-    	System.out.println(s);
-    }
+    */
 
 }

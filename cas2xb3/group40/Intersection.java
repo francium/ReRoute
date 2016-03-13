@@ -6,32 +6,35 @@ public class Intersection {
 
     private static int intersectionNum = 0;
 
-	private int[] coords;
+	private double x, y;
 	private String streets;
 	private int id;
 
-	Intersection(String str, int x, int y){
-		coords = new int[2];
-		this.streets = str;
-		this.coords[0] = x;
-		this.coords[1] = y;
+	public Intersection(String s, double x, double y){
+		this.streets = s;
+        this.x = x;
+        this.y = y;
 		this.id = intersectionNum++;
 	}
 
-	public int[] getCoords(){
-		return this.coords;
+	public double getX() {
+        return x;
 	}
 
-	public String getStreet(){
+	public double getY() {
+        return y;
+    }
+
+	public String getStreets() {
 		return this.streets;
 	}
 
-	public int getID(){
+	public int getId() {
 		return this.id;
 	}
 
-	public String toString(){
-		return "[" + getStreet() + "]";
+	public String toString() {
+		return "[" + streets + "]";
 	}
 
 }
