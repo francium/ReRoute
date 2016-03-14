@@ -15,13 +15,13 @@ import java.util.Arrays;
 
 public class App extends Application {
 
-    private final int RADIUS = 2;
-
     private void initUI(Stage stage) {
 
         Parser p = new Parser();
         Network net = new Network(p.numLines());
+        Camera cam = new Camera(122.300, 47.600, 122.350, 47.650);
 
+        // build network
         for (int i = 0; i < p.numLines(); i++) {
             String[] data = p.readLine();
             Intersection a = new Intersection(data[8] + " and " + data[9],
@@ -30,6 +30,7 @@ public class App extends Application {
             net.addIntersection(a);
         }
 
+        // parser obj no longer required
         p = null;
 
         // for each intersection in network
@@ -41,10 +42,7 @@ public class App extends Application {
         // add only closer node
         // repeat for road B
 
-
-        Shape[] points = new Shape[net.V()];
-        int c = 0;
-
+        /*
         for (int v=0; v<net.V(); v++) {
             Intersection i = net.getIntersection(v);
             if (i.getX() > 121.15 && i.getX() < 122.30 && i.getY() > 47 && i.getY() < 47.50) {
@@ -53,12 +51,10 @@ public class App extends Application {
                 System.out.println(c-1 + " " + points[c-1]);
             }
         }
+        */
 
         Pane root = new Pane();
-        System.out.println("Noo " + c);
-        //if (points[0] == null) System.exit(99);
-        Shape[] selPoints = Arrays.copyOfRange(points, 0, c);
-        root.getChildren().addAll(selPoints);
+        root.getChildren().addAll(cam.filterVisible(net));
 
         Scene scene = new Scene(root, 250, 220, Color.WHITESMOKE);
 
