@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class Camera {
 
-    private final int RADIUS = 2;
+    private final int RADIUS = 1;
 
     private double minX;
     private double minY;
@@ -23,7 +23,7 @@ public class Camera {
         this.maxY = maxY;
     }
 
-    public void pan(int dX, int dY) {
+    public void pan(double dX, double dY) {
         minX += dX;
         minY += dY;
         maxX += dX;
@@ -54,11 +54,12 @@ public class Camera {
         j -= minY;
         i /= dx;
         j /= dy;
-        return new double[] {RESX * i, RESY * j};
+        // flip x,y coordniate to make it right side up
+        return new double[] {RESX - RESX * i, RESY - RESY * j};
     }
 
     public Shape[] filterVisible(Network net) {
-        Shape[] intsecs = new Shape[net.V()/4]; // assume only 1/4
+        Shape[] intsecs = new Shape[net.V()];
         int c = 0;
         for (int v=0; v<net.V(); v++) {
             Intersection i = net.getIntersection(v);

@@ -1,25 +1,26 @@
 package cas2xb3.group40;
 
-import cas2xb3.group40.Intersection;
-import cas2xb3.group40.Network;
-import cas2xb3.group40.Parser;
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
-
 public class App extends Application {
+
+    private double iX, iY;
 
     private void initUI(Stage stage) {
 
         Parser p = new Parser();
         Network net = new Network(p.numLines());
-        Camera cam = new Camera(122.300, 47.600, 122.350, 47.650);
+        Camera cam = new Camera(122.30, 47.60, 122.43, 47.76);
 
         // build network
         for (int i = 0; i < p.numLines(); i++) {
@@ -56,7 +57,28 @@ public class App extends Application {
         Pane root = new Pane();
         root.getChildren().addAll(cam.filterVisible(net));
 
-        Scene scene = new Scene(root, 250, 220, Color.WHITESMOKE);
+        Scene scene = new Scene(root, 500, 500, Color.BLACK);
+
+        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                iX = mouseEvent.getSceneX();
+                iY = mouseEvent.getSceneY();
+            }
+        });
+
+        scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                double dx = mouseEvent.getSceneX() - iX;
+                double dy = mouseEvent.getSceneY() - iY;
+                cam.pan(dx, dy);
+                for (Node n: root.getChildren()) {
+                    n.setTranslateX(dx);
+                    n.setTranslateY(dy);
+                }
+            }
+        });
 
         stage.setTitle("Absolute layout");
         stage.setScene(scene);
