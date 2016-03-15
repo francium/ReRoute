@@ -31,21 +31,6 @@ public class Camera {
         maxY += dY/PAN_FACTOR;
     }
 
-    /*
-    public Shape[] filterVisible(Intersection[] in) {
-        int c = 0;
-        // assume 1/4 of objects are visible
-        Intersection[] out = new Intersection[in.length/4];
-        for (int i=0; i<in.length; i++) {
-            Intersection intsec = in[i];
-            if (intsec.getX() > minX && intsec.getX() < maxX)
-                if (intsec.getY() > minY &&  intsec.getY() < maxY)
-                    out[c++] = intsec;
-        }
-        return Arrays.copyOfRange(out, 0, c);
-    }
-    */
-
     private double[] normalizeCoords(double i, double j) {
         int RESX = 500;
         int RESY = 500;
@@ -55,7 +40,7 @@ public class Camera {
         j -= minY;
         i /= dx;
         j /= dy;
-        // flip x,y coordniate to make it right side up
+        // flip x,y coordinates to make it right side up
         return new double[] {RESX - RESX * i, RESY - RESY * j};
     }
 
@@ -63,7 +48,7 @@ public class Camera {
         Shape[] intsecs = new Shape[net.V()];
         int c = 0;
         for (int v=0; v<net.V(); v++) {
-            Intersection i = net.getIntersection(v);
+            Intersection i = net.get(v);
             if (i.getX() > minX && i.getX() < maxX && i.getY() > minY && i.getY() < maxY) {
                 double[] xy = normalizeCoords(i.getX(), i.getY());
                 intsecs[c++] = new Circle(xy[0], xy[1], RADIUS, Color.RED);

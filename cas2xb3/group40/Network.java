@@ -15,7 +15,7 @@ public class Network {
         nV++;
     }
 
-    public Intersection getIntersection(int i) {
+    public Intersection get(int i) {
         return intsecs[i];
     }
 
@@ -30,12 +30,11 @@ public class Network {
     	}
     	this.nE++;
     }
-
-    public Iterable<Intersection> adj(int id){
-        //Returns all adjacent vertices of v.
-        return (Iterable<Intersection>) this.adj.get(id).clone();
-    }
     */
+
+    public Intersection[] iterator(){
+        return intsecs.clone();
+    }
 
     public int V(){
         //Returns the number of vertices in the graph.
@@ -48,7 +47,7 @@ public class Network {
     }
 
     /*
-    private Intersection getIntersection(String streets){
+    private Intersection get(String streets){
     	for (Intersection w: intsecs){
     		if (w.getId() == id) return w;
     	}
@@ -77,6 +76,33 @@ public class Network {
             s += "\n";
         }
         return s;
+    }
+    */
+
+    /*
+    public Iterator<Network> iterator() {
+        return new ElementIterator();
+    }
+
+    class ElementIterator implements Iterator {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < V();
+        }
+
+        @Override
+        public Intersection next() {
+            return get(index++);
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
     }
     */
 

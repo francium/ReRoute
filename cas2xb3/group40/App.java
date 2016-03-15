@@ -2,19 +2,15 @@ package cas2xb3.group40;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
 public class App extends Application {
 
-    private double iX, iY;
+    private double mouseX, mouseY;
 
     private void initUI(Stage stage) {
 
@@ -43,17 +39,6 @@ public class App extends Application {
         // add only closer node
         // repeat for road B
 
-        /*
-        for (int v=0; v<net.V(); v++) {
-            Intersection i = net.getIntersection(v);
-            if (i.getX() > 121.15 && i.getX() < 122.30 && i.getY() > 47 && i.getY() < 47.50) {
-                points[c] = new Circle((i.getX()-122)*10000-2500, (i.getY()-47)*10000-5000, RADIUS);
-                points[c++].setFill(Color.BLACK);
-                System.out.println(c-1 + " " + points[c-1]);
-            }
-        }
-        */
-
         Pane root = new Pane();
         root.getChildren().addAll(cam.filterVisible(net));
 
@@ -62,17 +47,17 @@ public class App extends Application {
         scene.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                iX = mouseEvent.getSceneX();
-                iY = mouseEvent.getSceneY();
+                mouseX = mouseEvent.getSceneX();
+                mouseY = mouseEvent.getSceneY();
             }
         });
 
         scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                double dx = mouseEvent.getSceneX() - iX;
-                double dy = mouseEvent.getSceneY() - iY;
-                cam.pan(dx, dy);
+                double mousedx = mouseEvent.getSceneX() - mouseX;
+                double mousedy = mouseEvent.getSceneY() - mouseY;
+                cam.pan(mousedx, mousedy);
                 root.getChildren().clear();
                 root.getChildren().addAll(cam.filterVisible(net));
             }
