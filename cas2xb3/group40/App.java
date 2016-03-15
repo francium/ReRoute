@@ -73,10 +73,8 @@ public class App extends Application {
                 double dx = mouseEvent.getSceneX() - iX;
                 double dy = mouseEvent.getSceneY() - iY;
                 cam.pan(dx, dy);
-                for (Node n: root.getChildren()) {
-                    n.setTranslateX(dx);
-                    n.setTranslateY(dy);
-                }
+                root.getChildren().clear();
+                root.getChildren().addAll(cam.filterVisible(net));
             }
         });
 

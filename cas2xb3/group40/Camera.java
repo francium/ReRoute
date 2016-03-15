@@ -9,6 +9,7 @@ import java.util.Arrays;
 public class Camera {
 
     private final int RADIUS = 1;
+    private final int PAN_FACTOR = 5000;
 
     private double minX;
     private double minY;
@@ -24,10 +25,10 @@ public class Camera {
     }
 
     public void pan(double dX, double dY) {
-        minX += dX;
-        minY += dY;
-        maxX += dX;
-        maxY += dY;
+        minX += dX/PAN_FACTOR;
+        minY += dY/PAN_FACTOR;
+        maxX += dX/PAN_FACTOR;
+        maxY += dY/PAN_FACTOR;
     }
 
     /*
@@ -76,5 +77,9 @@ public class Camera {
         int dx = ((minX - maxX) / 2);
         int dx = ((minY - maxY) / 2);
     } */
+
+    public String toString() {
+        return String.format("(%f, %f), (%f, %f)", minX, minY, maxX, maxY);
+    }
 
 }
