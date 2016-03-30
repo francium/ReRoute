@@ -121,4 +121,12 @@ public class Network {
         return new Intersection[] {first, second};
     }
 
+    public static double distTo(Intersection i, Intersection j) {
+        double x1 = i.getX();
+        double y1 = i.getY();
+        double x2 = j.getX();
+        double y2 = j.getY();
+        return Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
+    }
+
 }

@@ -9,6 +9,7 @@ public class Intersection {
 	private double x, y;
 	private String s1, s2;
 	private int id;
+    private ArrayList<Intersection> adj;
 
 	public Intersection(String s1, String s2, double x, double y){
 		this.s1 = s1;
@@ -16,6 +17,7 @@ public class Intersection {
         this.x = x;
         this.y = y;
 		this.id = intersectionNum++;
+        adj = new ArrayList<>();
 	}
 
 	public double getX() {
@@ -33,6 +35,10 @@ public class Intersection {
 	public int getId() {
 		return this.id;
 	}
+
+    public void addAdjacent(Intersection i) {
+        adj.add(i);
+    }
 
 	public String toString() {
 		return "[" + s1  + " and " + s2 + "]";

@@ -50,9 +50,13 @@ public class App extends Application {
             double dist23 = net.distTo(closest[0],closest[1]);
 
             if (dist13 < dist23) {
-                // add both to adj list
+                i.addAdjacent(closest[0]);
+                i.addAdjacent(closest[1]);
             } else if (dist12 > dist23) {
-                // add closer node
+                if (dist12 < dist13)
+                    i.addAdjacent(closest[0]);
+                else
+                    i.addAdjacent(closest[1]);
             }
         }
 
