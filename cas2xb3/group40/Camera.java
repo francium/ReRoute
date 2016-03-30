@@ -2,6 +2,7 @@ package cas2xb3.group40;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 
 import java.util.Arrays;
@@ -74,17 +75,38 @@ public class Camera {
     }
 
     public Shape[] filterVisible(Network net) {
-        Shape[] intsecs = new Shape[net.V()];
+        Intersection[] intsecs = new Intersection[net.V()];
+        Shape[] shapes = new Shape[5 * net.V()]; // assume 4 connections per intersection + intersections
         int c = 0;
         for (int v=0; v<net.V(); v++) {
             Intersection i = net.get(v);
             if (i.getX() > minX && i.getX() < maxX && i.getY() > minY && i.getY() < maxY) {
                 double[] xy = normalizeCoords(i.getX(), i.getY());
                 Circle circ = new Circle(xy[0], xy[1], RADIUS, INTERSECTION_COLOR);
-                intsecs[c++] = circ;
+                intsecs[c] = i;
+                shapes[c++] = circ;
             }
         }
-        return Arrays.copyOfRange(intsecs, 0, c);
+
+        intsecs = Arrays.copyOfRange(intsecs, 0, c);
+
+        System.out.println("** " + intsecs[0].getAdjacent().length);
+
+        for (Intersection i: intsecs[0].getAdjacent()) System.out.println(i);
+
+        for (Intersection i: intsecs) {
+            if (i == null) System.out.println("oops");
+            double[] x1y1 = normalizeCoords(i.getX(), i.getY());
+            for (Intersection j: i.getAdjacent()) {
+                double[] x2y2 = normalizeCoords(j.getX(), j.getY());
+                Line line = new Line(x1y1[0], x1y1[1], x2y2[0], x2y2[1]);
+                shapes[c++] = line;
+            }
+        }
+
+        System.out.println(c);
+        shapes = Arrays.copyOfRange(shapes, 0, c);
+        return shapes;
     }
 
     public String toString() {

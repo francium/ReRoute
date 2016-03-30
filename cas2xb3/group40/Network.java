@@ -110,9 +110,12 @@ public class Network {
         Intersection first = intsecs[0];
         double firstDist = Double.POSITIVE_INFINITY;
         Intersection second = intsecs[1];
+
         for (int i=1; i<intsecs.length; i++) {
             double dist = distTo(intsec, intsecs[i]);
-            if (dist < firstDist) {
+            boolean isSame = intsec == intsecs[i];
+
+            if (dist < firstDist && !isSame) {
                 second = first;
                 first = intsecs[i];
                 firstDist = dist;

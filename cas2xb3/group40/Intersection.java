@@ -40,6 +40,15 @@ public class Intersection {
         adj.add(i);
     }
 
+    public Intersection[] getAdjacent() {
+        Intersection[] adj = new Intersection[this.adj.size()];
+        int i = 0;
+        for (Intersection intsec: this.adj) {
+            adj[i++] = intsec;
+        }
+        return adj;
+    }
+
 	public String toString() {
 		return "[" + s1  + " and " + s2 + "]";
 	}

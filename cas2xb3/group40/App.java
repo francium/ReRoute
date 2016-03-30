@@ -49,14 +49,19 @@ public class App extends Application {
             double dist13 = net.distTo(i,closest[1]);
             double dist23 = net.distTo(closest[0],closest[1]);
 
+            System.out.println("^^^ " + dist12 + "   " + dist13 + "      " + dist23);
             if (dist13 < dist23) {
+                System.out.println(88);
                 i.addAdjacent(closest[0]);
                 i.addAdjacent(closest[1]);
             } else if (dist12 > dist23) {
-                if (dist12 < dist13)
+                if (dist12 < dist13) {
+                    System.out.println(98);
                     i.addAdjacent(closest[0]);
-                else
+                } else{
+                    System.out.println(98);
                     i.addAdjacent(closest[1]);
+                }
             }
         }
 
