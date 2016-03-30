@@ -106,4 +106,19 @@ public class Network {
     }
     */
 
+    public Intersection[] findClosest2(Intersection intsec) {
+        Intersection first = intsecs[0];
+        double firstDist = Double.POSITIVE_INFINITY;
+        Intersection second = intsecs[1];
+        for (int i=1; i<intsecs.length; i++) {
+            double dist = distTo(intsec, intsecs[i]);
+            if (dist < firstDist) {
+                second = first;
+                first = intsecs[i];
+                firstDist = dist;
+            }
+        }
+        return new Intersection[] {first, second};
+    }
+
 }

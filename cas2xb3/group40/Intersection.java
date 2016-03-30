@@ -7,11 +7,12 @@ public class Intersection {
     private static int intersectionNum = 0;
 
 	private double x, y;
-	private String streets;
+	private String s1, s2;
 	private int id;
 
-	public Intersection(String s, double x, double y){
-		this.streets = s;
+	public Intersection(String s1, String s2, double x, double y){
+		this.s1 = s1;
+		this.s2 = s2;
         this.x = x;
         this.y = y;
 		this.id = intersectionNum++;
@@ -25,8 +26,8 @@ public class Intersection {
         return y;
     }
 
-	public String getStreets() {
-		return this.streets;
+	public String[] getStreets() {
+		return new String[] {s1, s2};
 	}
 
 	public int getId() {
@@ -34,7 +35,7 @@ public class Intersection {
 	}
 
 	public String toString() {
-		return "[" + streets + "]";
+		return "[" + s1  + " and " + s2 + "]";
 	}
 
 }

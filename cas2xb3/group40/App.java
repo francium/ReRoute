@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -27,7 +26,7 @@ public class App extends Application {
         // build network
         for (int i = 0; i < p.numLines(); i++) {
             String[] data = p.readLine();
-            Intersection a = new Intersection(data[8] + " and " + data[9],
+            Intersection a = new Intersection(data[8], data[9],
                                               Math.abs(Double.parseDouble(data[12]) ),
                                               Math.abs(Double.parseDouble(data[11]) ) );
             net.addIntersection(a);
@@ -44,6 +43,18 @@ public class App extends Application {
         // if d(1,2) > d(2,3)
         // add only closer node
         // repeat for road B
+        for (Intersection i: net.iterator()) {
+            Intersection[] closest = net.findClosest2(i);
+            double dist12 = net.distTo(i,closest[0]);
+            double dist13 = net.distTo(i,closest[1]);
+            double dist23 = net.distTo(closest[0],closest[1]);
+
+            if (dist13 < dist23) {
+                // add both to adj list
+            } else if (dist12 > dist23) {
+                // add closer node
+            }
+        }
 
         Pane root = new Pane();
         root.getChildren().addAll(cam.filterVisible(net));
