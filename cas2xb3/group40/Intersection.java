@@ -49,8 +49,15 @@ public class Intersection {
         return adj;
     }
 
+    @Override
 	public String toString() {
 		return "[" + s1  + " and " + s2 + "]";
 	}
+
+    @Override
+    public boolean equals(Object other) {
+        if (this.id == ((Intersection)other).id) return true;
+        return false;
+    }
 
 }

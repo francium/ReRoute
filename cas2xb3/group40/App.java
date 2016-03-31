@@ -44,25 +44,10 @@ public class App extends Application {
         // add only closer node
         // repeat for road B
         for (Intersection i: net.iterator()) {
-            Intersection[] closest = net.findClosest2(i);
-            double dist12 = net.distTo(i,closest[0]);
-            double dist13 = net.distTo(i,closest[1]);
-            double dist23 = net.distTo(closest[0],closest[1]);
-
-            System.out.println("^^^ " + dist12 + "   " + dist13 + "      " + dist23);
-            if (dist13 < dist23) {
-                System.out.println(88);
-                i.addAdjacent(closest[0]);
-                i.addAdjacent(closest[1]);
-            } else if (dist12 > dist23) {
-                if (dist12 < dist13) {
-                    System.out.println(98);
-                    i.addAdjacent(closest[0]);
-                } else{
-                    System.out.println(98);
-                    i.addAdjacent(closest[1]);
-                }
-            }
+            Intersection[] closest1 = net.findClosest(i.getStreets()[0], i);
+            Intersection[] closest2 = net.findClosest(i.getStreets()[1], i);
+            renameMe(net, i, closest1);
+            renameMe(net, i, closest2);
         }
 
         Pane root = new Pane();
@@ -105,6 +90,32 @@ public class App extends Application {
         stage.setTitle(TITLE);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void renameMe(Network net, Intersection i, Intersection[] closest) {
+        if (closest.length == 0) return;
+
+        double dist12 = net.distTo(i,closest[0]);
+
+        if (closest.length > 1) {
+            double dist13 = net.distTo(i, closest[1]);
+            double dist23 = net.distTo(closest[0], closest[1]);
+
+            if (dist13 < dist23) {
+                i.addAdjacent(closest[0]);
+                i.addAdjacent(closest[1]);
+            } else if (dist12 > dist23) {
+                if (dist12 < dist13) {
+                    i.addAdjacent(closest[0]);
+                } else{
+                    i.addAdjacent(closest[1]);
+                }
+            }
+        } else {
+            i.addAdjacent(closest[0]);
+            return;
+        }
+
     }
 
     @Override

@@ -106,21 +106,25 @@ public class Network {
     }
     */
 
-    public Intersection[] findClosest2(Intersection intsec) {
-        Intersection first = intsecs[0];
+    public Intersection[] findClosest(String street, Intersection intsec) {
+        Intersection first = null;
         double firstDist = Double.POSITIVE_INFINITY;
-        Intersection second = intsecs[1];
+        Intersection second = null;
 
         for (int i=1; i<intsecs.length; i++) {
             double dist = distTo(intsec, intsecs[i]);
-            boolean isSame = intsec == intsecs[i];
+            boolean isSame = (intsec == intsecs[i]);
+            boolean isStreet = intsecs[i].getStreets()[0].equals(street);
 
-            if (dist < firstDist && !isSame) {
+            if (dist < firstDist && !isSame && isStreet && dist < 0.005) {
                 second = first;
                 first = intsecs[i];
                 firstDist = dist;
             }
         }
+
+        if (first == null) return new Intersection[] {};
+        if (second == null) return new Intersection[] {first};
         return new Intersection[] {first, second};
     }
 
