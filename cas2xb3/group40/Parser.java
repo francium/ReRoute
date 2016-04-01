@@ -35,6 +35,10 @@ public class Parser {
         line = 0;
     }
 
+    public void destructor() {
+        data = null;
+    }
+
     /**
      * @return single lines data
      */

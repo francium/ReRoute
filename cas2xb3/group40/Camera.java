@@ -9,10 +9,10 @@ import java.util.Arrays;
 
 public class Camera {
 
-    private final int RADIUS = 2;
+    private final int RADIUS = 1;
     private final int PAN_FACTOR = 5000;
     private final double SCROLL_FACTOR = 0.5;
-    private final Color INTERSECTION_COLOR = Color.KHAKI;
+    private final Color INTERSECTION_COLOR = Color.BLACK;
 
     private int resX, resY;
 
