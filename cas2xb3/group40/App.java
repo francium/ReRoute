@@ -42,7 +42,7 @@ public class App extends Application {
 
         Parser p = new Parser();
         Network net = new Network(p.numLines());
-        Camera cam = new Camera(122.30, 47.60, 122.33, 47.64);
+        Camera cam = new Camera(122.30, 47.60, 122.33, 47.64, stage.getWidth(), stage.getHeight());
             // different aspect ratio
             //Camera cam = new Camera(122.30, 47.60, 122.43, 47.76);
 
@@ -67,7 +67,6 @@ public class App extends Application {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        System.out.println("start");
                         // build network
                         Network.buildNetwork(net, p);
 
@@ -86,7 +85,6 @@ public class App extends Application {
                 p.destructor();
 
                 stage.setScene(mapScene);
-                System.out.println("done");
             }
         });
         service.start();

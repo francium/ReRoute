@@ -14,7 +14,7 @@ public class Camera {
     private final double SCROLL_FACTOR = 0.5;
     private final Color INTERSECTION_COLOR = Color.BLACK;
 
-    private int resX, resY;
+    private double resX, resY;
 
     //private final double MIN_X =
     private double minX;
@@ -29,7 +29,7 @@ public class Camera {
     // max
     // x 122.43071639499999
     // y 47.734142562000045
-    public Camera(double minX, double minY, double maxX, double maxY) {
+    public Camera(double minX, double minY, double maxX, double maxY, double resX, double resY) {
         this.resX = resX;
         this.resY = resY;
         if (minX > maxX || minY > maxY) throw new IllegalArgumentException();
