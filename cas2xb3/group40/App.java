@@ -1,14 +1,22 @@
 package cas2xb3.group40;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import sun.applet.Main;
+
+import java.io.File;
 
 public class App extends Application {
 
@@ -17,6 +25,11 @@ public class App extends Application {
     private double mouseX, mouseY;
 
     private void initUI(Stage stage) {
+        stage.setTitle(TITLE);
+
+        Pane root = new Pane();
+        Scene mapView = new Scene(root, 500, 500, BACKGROUND_COLOR);
+        stage.setScene(mapView);
 
         Parser p = new Parser();
         Network net = new Network(p.numLines());
@@ -50,12 +63,9 @@ public class App extends Application {
             renameMe(net, i, closest2);
         }
 
-        Pane root = new Pane();
         root.getChildren().addAll(cam.filterVisible(net));
 
-        Scene scene = new Scene(root, 500, 500, BACKGROUND_COLOR);
-
-        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+        mapView.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 mouseX = mouseEvent.getSceneX();
@@ -63,7 +73,7 @@ public class App extends Application {
             }
         });
 
-        scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
+        mapView.setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 double mousedx = mouseEvent.getSceneX() - mouseX;
@@ -74,7 +84,7 @@ public class App extends Application {
             }
         });
 
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        mapView.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
                 if (keyEvent.getCode() == KeyCode.EQUALS) {
@@ -87,8 +97,18 @@ public class App extends Application {
             }
         });
 
-        stage.setTitle(TITLE);
-        stage.setScene(scene);
+        mapView.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+                cam.setResX(newSceneWidth.intValue());
+                root.getChildren().addAll(cam.filterVisible(net));
+            }
+        });
+        mapView.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+                cam.setResY(newSceneHeight.intValue());
+            }
+        });
+
         stage.show();
     }
 

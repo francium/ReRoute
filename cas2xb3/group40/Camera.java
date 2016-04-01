@@ -14,6 +14,8 @@ public class Camera {
     private final double SCROLL_FACTOR = 0.5;
     private final Color INTERSECTION_COLOR = Color.KHAKI;
 
+    private int resX, resY;
+
     //private final double MIN_X =
     private double minX;
     private double minY;
@@ -28,11 +30,21 @@ public class Camera {
     // x 122.43071639499999
     // y 47.734142562000045
     public Camera(double minX, double minY, double maxX, double maxY) {
+        this.resX = resX;
+        this.resY = resY;
         if (minX > maxX || minY > maxY) throw new IllegalArgumentException();
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;
         this.maxY = maxY;
+    }
+
+    public void setResX(int resX) {
+        this.resX = resX;
+    }
+
+    public void setResY(int resY) {
+        this.resY = resY;
     }
 
     public void pan(double dX, double dY) {
@@ -62,8 +74,6 @@ public class Camera {
     }
 
     private double[] normalizeCoords(double i, double j) {
-        int RESX = 500;
-        int RESY = 500;
         double dx = maxX - minX;
         double dy = maxY - minY;
         i -= minX;
@@ -71,7 +81,7 @@ public class Camera {
         i /= dx;
         j /= dy;
         // flip x,y coordinates to make it right side up
-        return new double[] {RESX - RESX * i, RESY - RESY * j};
+        return new double[] {resX - resX * i, resY - resY * j};
     }
 
     public Shape[] filterVisible(Network net) {
@@ -90,12 +100,7 @@ public class Camera {
 
         intsecs = Arrays.copyOfRange(intsecs, 0, c);
 
-        System.out.println("** " + intsecs[0].getAdjacent().length);
-
-        for (Intersection i: intsecs[0].getAdjacent()) System.out.println(i);
-
         for (Intersection i: intsecs) {
-            if (i == null) System.out.println("oops");
             double[] x1y1 = normalizeCoords(i.getX(), i.getY());
             for (Intersection j: i.getAdjacent()) {
                 double[] x2y2 = normalizeCoords(j.getX(), j.getY());
@@ -104,7 +109,6 @@ public class Camera {
             }
         }
 
-        System.out.println(c);
         shapes = Arrays.copyOfRange(shapes, 0, c);
         return shapes;
     }

@@ -114,7 +114,7 @@ public class Network {
         for (int i=1; i<intsecs.length; i++) {
             double dist = distTo(intsec, intsecs[i]);
             boolean isSame = (intsec == intsecs[i]);
-            boolean isStreet = intsecs[i].getStreets()[0].equals(street);
+            boolean isStreet = intsecs[i].getStreets()[0].equals(street) || intsecs[i].getStreets()[1].equals(street);
 
             if (dist < firstDist && !isSame && isStreet && dist < 0.005) {
                 second = first;
