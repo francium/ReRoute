@@ -9,10 +9,11 @@ import java.util.Arrays;
 
 public class Camera {
 
-    private final int RADIUS = 1;
     private final int PAN_FACTOR = 5000;
     private final double SCROLL_FACTOR = 0.5;
     private final Color INTERSECTION_COLOR = Color.BLACK;
+
+    private int radius = 1;
 
     private double resX, resY;
 
@@ -37,7 +38,11 @@ public class Camera {
         this.minY = minY;
         this.maxX = maxX;
         this.maxY = maxY;
+        double dx = maxX - minX;
+        radius = (int)((1.0/(dx))/8);
     }
+
+    public int getRadius() { return  this.radius; }
 
     public void setResX(int resX) {
         this.resX = resX;
@@ -52,7 +57,6 @@ public class Camera {
         minY += dY/PAN_FACTOR;
         maxX += dX/PAN_FACTOR;
         maxY += dY/PAN_FACTOR;
-        //if (minX )
     }
 
     public void zoom(boolean in) {
@@ -71,6 +75,8 @@ public class Camera {
             maxX += ndx;
             maxY += ndy;
         }
+        dx = maxX - minX;
+        radius = (int)((1.0/(dx))/8);
     }
 
     private double[] normalizeCoords(double i, double j) {
@@ -92,9 +98,18 @@ public class Camera {
             Intersection i = net.get(v);
             if (i.getX() > minX && i.getX() < maxX && i.getY() > minY && i.getY() < maxY) {
                 double[] xy = normalizeCoords(i.getX(), i.getY());
-                Circle circ = new Circle(xy[0], xy[1], RADIUS, INTERSECTION_COLOR);
+                i.setVisible(true);
+                ((Circle)i.getShape()).setCenterX(xy[0]);
+                ((Circle)i.getShape()).setCenterY(xy[1]);
+                ((Circle)i.getShape()).setRadius(radius);
+                i.getShape().setFill(INTERSECTION_COLOR);
+                //Circle circ = new Circle(xy[0], xy[1], radius, INTERSECTION_COLOR);
+/*                if (i.getId() == 50 || i.getId() == 55) {
+                    circ.setRadius(5);
+                    circ.setFill(Color.CORAL);
+                }*/
                 intsecs[c] = i;
-                shapes[c++] = circ;
+                shapes[c++] = i.getShape();
             }
         }
 
