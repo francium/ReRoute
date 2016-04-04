@@ -14,6 +14,8 @@ public class Camera {
     private final double SCROLL_FACTOR = 0.5;
     private final Color INTERSECTION_COLOR = Color.BLACK;
 
+    private ArrayList<Road> curPath;
+
     private int radius = 1;
 
     private double resX, resY;
@@ -102,9 +104,12 @@ public class Camera {
     }
 
     public Shape[] filterVisible(Network net, ArrayList<Road> path) {
+        if (path != null) curPath = path;
         Intersection[] intsecs = new Intersection[net.V()];
         Shape[] shapes = new Shape[5 * net.V()]; // assume 4 connections per intersection + intersections
+
         int c = 0;
+
         for (int v=0; v<net.V(); v++) {
             Intersection i = net.get(v);
             if (i.getX() > minX && i.getX() < maxX && i.getY() > minY && i.getY() < maxY) {
@@ -113,7 +118,7 @@ public class Camera {
                 ((Circle)i.getShape()).setCenterX(xy[0]);
                 ((Circle)i.getShape()).setCenterY(xy[1]);
                 ((Circle)i.getShape()).setRadius(radius);
-                i.getShape().setFill(INTERSECTION_COLOR);
+                //i.getShape().setFill(INTERSECTION_COLOR);
                 //Circle circ = new Circle(xy[0], xy[1], radius, INTERSECTION_COLOR);
 /*                if (i.getId() == 50 || i.getId() == 55) {
                     circ.setRadius(5);
@@ -143,6 +148,13 @@ public class Camera {
                     for (Road r: path) {
                         if (r.oneI() == i.getId() || r.oneI() == j.getId() &&
                             r.otherI() == i.getId() || r.oneI() == j.getId()) {
+                            line.setStroke(Color.RED);
+                        }
+                    }
+                else if (curPath != null)
+                    for (Road r: curPath) {
+                        if (r.oneI() == i.getId() || r.oneI() == j.getId() &&
+                                r.otherI() == i.getId() || r.oneI() == j.getId()) {
                             line.setStroke(Color.RED);
                         }
                     }

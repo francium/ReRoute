@@ -148,10 +148,14 @@ public class App extends Application {
                 //System.out.println(djk[0].pathTo(55) == null);
 
 
-                Dijkstra d = new Dijkstra(net, 1000);
-                ArrayList<Road> path = d.pathTo(5550);
-                root.getChildren().clear();
-                root.getChildren().addAll(cam.filterVisible(net, path));
+                int rand = (int)(10000*Math.random());
+                Dijkstra d = new Dijkstra(net, rand);
+                if (d.hasPathTo(rand)) {
+                    ArrayList<Road> path = d.pathTo(5550);
+                    cam.panTo(net, net.get(rand));
+                    root.getChildren().clear();
+                    root.getChildren().addAll(cam.filterVisible(net, path));
+                }
             }
         });
         service.start();
