@@ -3,9 +3,9 @@ package cas2xb3.group40;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class Network {
+public class Network implements Serializable {
 
     private Intersection[] intsecs;
     private int nV;
@@ -147,8 +147,6 @@ public class Network {
             Intersection a = new Intersection(data[8], data[9],
                     Math.abs(Double.parseDouble(data[12]) ),
                     Math.abs(Double.parseDouble(data[11]) ) );
-            Circle c = new Circle(0, 0, 0, Color.BLACK);
-            a.setShape(c);
             a.setVisible(false);
             net.addIntersection(a);
         }
@@ -185,6 +183,15 @@ public class Network {
             return;
         }
 
+    }
+
+    public static void assignNetwork(Network net, Network netLoad) {
+        netLoad.intsecs = net.intsecs;
+        netLoad.nE = net.nE;
+        netLoad.nV = net.nV;
+        for (Intersection i: netLoad.intsecs) {
+            i.newCircle();
+        }
     }
 
 

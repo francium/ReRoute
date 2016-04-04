@@ -6,14 +6,19 @@ import java.util.Scanner;
 public class Parser {
 
     private final String FILENAME = "data/Intersections.csv";
+    private final String FILENAME_MINI = "data/Intersections.mini.csv";
 
     private Scanner input;
     private String[][] data;
     private int line;
 
-    public Parser() {
+    public Parser(int mini) {
         try {
-            input = new Scanner(new File(FILENAME));
+            if (mini == 1)
+                input = new Scanner(new File(FILENAME_MINI));
+            else
+                input = new Scanner(new File(FILENAME));
+
             int c = 0;
             while (input.hasNext()) {
                 input.nextLine();

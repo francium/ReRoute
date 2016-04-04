@@ -133,6 +133,12 @@ public class Camera {
                             i.getShape().setFill(Color.RED);
                         }
                     }
+                else if (curPath != null)
+                    for (Road r: curPath) {
+                        if (r.oneI() == i.getId() || r.otherI() == i.getId()) {
+                            i.getShape().setFill(Color.RED);
+                        }
+                    }
             }
         }
 

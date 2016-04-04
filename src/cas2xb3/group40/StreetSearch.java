@@ -24,9 +24,17 @@ public class StreetSearch {
             return;
         }
 
-        String[] parts = userInput.split("and | AND");
-        String part0 = parts[0].toUpperCase();
-        String part1 = parts[1].toUpperCase();
+        String part0;
+        String part1;
+        try {
+            String[] parts = userInput.split(" and | AND ");
+            if (parts.length != 2) throw new Exception();
+            part0 = parts[0].toUpperCase();
+            part1 = parts[1].toUpperCase();
+        } catch (Exception e) {
+            System.out.println("invalid input. Input should be \"to:|from: street one and street two\"");
+            return;
+        }
 
         Intersection match = null;
         int matches = 0;

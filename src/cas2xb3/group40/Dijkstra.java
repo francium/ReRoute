@@ -104,7 +104,7 @@ public class Dijkstra {
 		return reverse;
 	}
 	public static void main(String[] args){
-		  Parser p = new Parser();
+		  Parser p = new Parser(0);
 	        Network net = new Network(p.numLines());
 	        Network.buildNetwork(net, p);
             System.out.println(net.get(1).getShape() == null);

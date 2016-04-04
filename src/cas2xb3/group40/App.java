@@ -28,6 +28,7 @@ public class App extends Application {
     private final Color MAP_BACKGROUND_COLOR = Color.PAPAYAWHIP;
     private final Color LOAD_BACKGROUND_COLOR = Color.WHITE;
     private double mouseX, mouseY;
+    private boolean loaded = false;
 
     private void initUI(Stage stage) {
         stage.setTitle(TITLE);
@@ -51,7 +52,7 @@ public class App extends Application {
 
         stage.show();
 
-        Parser p = new Parser();
+        Parser p = new Parser(0);
         Network net = new Network(p.numLines());
         Camera cam = new Camera(122.30, 47.60, 122.33, 47.64, stage.getWidth(), stage.getHeight());
             // different aspect ratio
@@ -101,13 +102,15 @@ public class App extends Application {
             }
         });
 
-        /*
         // windows resize handler
         //mapScene.widthProperty().addListener(new ChangeListener<Number>() {
         topScene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-                cam.setResX(newSceneWidth.intValue());
-                root.getChildren().addAll(cam.filterVisible(net, null));
+                if (loaded) {
+                    cam.setResX(newSceneWidth.intValue());
+                    root.getChildren().clear();
+                    root.getChildren().addAll(cam.filterVisible(net, null));
+                }
             }
         });
 
@@ -115,10 +118,62 @@ public class App extends Application {
         //mapScene.heightProperty().addListener(new ChangeListener<Number>() {
         topScene.heightProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-                cam.setResY(newSceneHeight.intValue());
+                if (loaded)
+                    cam.setResY(newSceneHeight.intValue());
+                    root.getChildren().clear();
+                    root.getChildren().addAll(cam.filterVisible(net, null));
             }
         });
-        */
+    }
+
+    private void startLoadingThread(Network net, Parser p, Pane root, Camera cam, BorderPane topPane, Scene topScene) {
+        Service<Void> service = new Service<Void>() {
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        /*
+                            // try loading
+                            //Network netLoad = Util.load();
+                            Network netLoad = null;
+
+                            if (netLoad != null) {
+                                // assign loaded network to argument network
+                                Network.assignNetwork(net, netLoad);
+                            } else {
+                                // if loading fails, build network
+                                Network.buildNetwork(net, p);
+                                System.out.println("1");
+                                Util.save(net);
+                                System.out.println("2");
+                            }
+                        */
+
+                        Network.buildNetwork(net, p);
+
+                        return null;
+                    }
+                };
+            }
+        };
+        service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent workerStateEvent) {
+                // add shapes to root pane
+                root.getChildren().clear();
+                root.getChildren().addAll(cam.filterVisible(net, null));
+
+                // parser obj no longer required
+                p.destructor();
+
+                //stage.setScene(mapScene);
+                topPane.setCenter(root);
+                topScene.setFill(MAP_BACKGROUND_COLOR);
+                loaded = true;
+            }
+        });
+        service.start();
     }
 
     private void getUserInputThread(Network net, Camera cam, Pane root) {
@@ -156,6 +211,9 @@ public class App extends Application {
                 path[0] = StreetSearch.getUserInput(net, cam);
                 root.getChildren().clear();
                 root.getChildren().addAll(cam.filterVisible(net, path[0]));
+                for (int i=0; i<path[0].size(); i++) {
+                    System.out.println(path[0].get(i));
+                }
 
                 /* // Working block
                 int rand = (int)(10000*Math.random());
@@ -169,47 +227,6 @@ public class App extends Application {
             }
         });
         service.start();
-    }
-
-    private void startLoadingThread(Network net, Parser p, Pane root, Camera cam, BorderPane topPane, Scene topScene) {
-        Service<Void> service = new Service<Void>() {
-            @Override
-            protected Task<Void> createTask() {
-                return new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        // build network
-                        Network.buildNetwork(net, p);
-
-                        return null;
-                    }
-                };
-            }
-        };
-        service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent workerStateEvent) {
-                // add shapes to root pane
-                root.getChildren().clear();
-                root.getChildren().addAll(cam.filterVisible(net, null));
-
-                // parser obj no longer required
-                p.destructor();
-
-                //stage.setScene(mapScene);
-                topPane.setCenter(root);
-                topScene.setFill(MAP_BACKGROUND_COLOR);
-            }
-        });
-        service.start();
-    }
-
-    private double distance(Shape s, double x, double y) {
-        return distance(s.getLayoutX(), s.getLayoutY(), x, y);
-    }
-
-    private double distance(double x1, double y1, double x2, double y2) {
-        return Math.sqrt((Math.pow((x2-x1),2))+(Math.pow((y2-y1),2)));
     }
 
     @Override

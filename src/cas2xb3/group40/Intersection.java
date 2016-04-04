@@ -1,20 +1,23 @@
 package cas2xb3.group40;
 
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Intersection {
+public class Intersection implements Serializable {
 
     private static int intersectionNum = 0;
 
 	private double x, y;
 	private String s1, s2;
 	private int id;
-    private Shape shape;
+    private transient Shape shape;
     private boolean visible;
     private ArrayList<Intersection> adj;
-    private ArrayList<Road> adjR;//ADDED
+    private ArrayList<Road> adjR;
 
 	public Intersection(String s1, String s2, double x, double y){
 		this.s1 = s1;
@@ -24,7 +27,12 @@ public class Intersection {
 		this.id = intersectionNum++;
         adj = new ArrayList<>();
         adjR = new ArrayList<>();
+        shape = new Circle(0, 0, 0, Color.BLACK);
 	}
+
+    public void newCircle() {
+        shape = new Circle(0, 0, 0, Color.BLACK);
+    }
 
     public boolean isVisible() {
         return visible;
@@ -53,15 +61,13 @@ public class Intersection {
 	public int getId() {
 		return this.id;
 	}
-	
-	//MODIFIED
+
     public void addAdjacent(Intersection i) {
         adj.add(i);
-        Road r = new Road(this.getId(),i.getId(),1.0);//ADDED
-        adjR.add(r);//ADDED
+        Road r = new Road(this, i, this.getId(),i.getId(),1.0*10*Math.random());
+        adjR.add(r);
     }
-    
-    //ADDED
+
     public Road[] adjR(){
     	Road[] adjR = new Road[this.adjR.size()];
     	int i = 0;
