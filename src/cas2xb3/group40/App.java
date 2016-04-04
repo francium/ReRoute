@@ -211,8 +211,16 @@ public class App extends Application {
                 path[0] = StreetSearch.getUserInput(net, cam);
                 root.getChildren().clear();
                 root.getChildren().addAll(cam.filterVisible(net, path[0]));
-                for (int i=0; i<path[0].size(); i++) {
+                Road prev = path[0].get(0);
+                for (int i=1; i<path[0].size(); i++) {
                     System.out.println(path[0].get(i));
+                    // work in progress
+                    /*
+                    if (prev.oneI() == path[0].get(i).oneI())
+                        System.out.println(path[0].get(i));
+                    else if (prev.oneI() == path[0].get(i).oneI())
+                        System.out.println(path[0].get(i));
+                        */
                 }
 
                 /* // Working block

@@ -152,15 +152,26 @@ public class Camera {
                 shapes[c++] = line;
                 if (path != null)
                     for (Road r: path) {
+                        /*
                         if (r.oneI() == i.getId() || r.oneI() == j.getId() &&
                             r.otherI() == i.getId() || r.oneI() == j.getId()) {
+                            line.setStroke(Color.RED);
+                        }
+                        */
+                        // fixed multiple edges highlighted
+                        if (r.oneI() == i.getId() && r.otherI() == j.getId()) {
                             line.setStroke(Color.RED);
                         }
                     }
                 else if (curPath != null)
                     for (Road r: curPath) {
+                        /*
                         if (r.oneI() == i.getId() || r.oneI() == j.getId() &&
                                 r.otherI() == i.getId() || r.oneI() == j.getId()) {
+                            line.setStroke(Color.RED);
+                        }
+                        */
+                        if (r.oneI() == i.getId() && r.otherI() == j.getId()) {
                             line.setStroke(Color.RED);
                         }
                     }

@@ -76,7 +76,10 @@ public class StreetSearch {
                     //System.out.println("drawing");
                     //fromTo[0].getShape().setFill(Color.RED);
                     //fromTo[1].getShape().setFill(Color.BLUE);
-                    djkOut = djk;
+                    //djkOut = djk;
+                    cam.panTo(net, fromTo[1]);
+                    cam.zoom(false);
+                    cam.zoom(false);
                     path = djk.pathTo(fromTo[1].getId());
                     break;
                 } else {
