@@ -34,7 +34,6 @@ public class Intersection {
         this.visible = visible;
     }
 
-
     public Shape getShape() { return this.shape; }
 
     public void setShape(Shape s) { this.shape = s; }

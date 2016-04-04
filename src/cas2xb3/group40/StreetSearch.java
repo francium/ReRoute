@@ -4,6 +4,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -38,18 +39,19 @@ public class StreetSearch {
             }
         }
         if (matches == 0) out = "The phrase, " + "\"" + userInput + "\", has no matches\n";
-        System.out.println(out);
-        System.out.println("matches: " + matches);
-        if (matches == 1) {
-            System.out.println("assignment");
+        else if (matches == 1) {
+//            System.out.println("assignment");
+            System.out.println("Okay. Match found: " + match);
             fromTo[mode] = match;
-            System.out.println("after assignment: " + fromTo[0] + " " + fromTo[1]);
+//            System.out.println("after assignment: " + fromTo[0] + " " + fromTo[1]);
+        } else {
+            System.out.println(out);
         }
     }
 
-    public static Dijkstra getUserInput(Network net, Camera cam) {
+    public static ArrayList<Road> getUserInput(Network net, Camera cam) {
         Dijkstra djkOut = null;
-        Road[] path = null;
+        ArrayList<Road> path = null;
         Scanner input = new Scanner(System.in);
         System.out.print("Input start and destination\nto: street one and street two\nfrom: street three and street four\n> ");
         Intersection[] fromTo = {null, null};
@@ -58,36 +60,31 @@ public class StreetSearch {
         while (!inputString.equals("q")) {
             findInput(net, inputString, fromTo);
 
-            System.out.println("so far:" + fromTo[0] + " " + fromTo[1]);
+            //System.out.println("so far:" + fromTo[0] + " " + fromTo[1]);
             if (fromTo[0] != null && fromTo[1] != null) {
-                System.out.println("got both");
+                //System.out.println("got both");
                 Dijkstra djk = new Dijkstra(net, fromTo[0].getId());
                 if (djk.hasPathTo(fromTo[1].getId())) {
-                    System.out.println("drawing");
-                    fromTo[0].getShape().setFill(Color.RED);
-                    System.out.println("drawing");
-                    fromTo[1].getShape().setFill(Color.BLUE);
-                    System.out.println("1");
-                    cam.zoom(false);
-                    System.out.println("2");
-                    cam.zoom(false);
-                    System.out.println("3");
-                    //cam.panTo(net, fromTo[0]);
-                    djk.pathTo(fromTo[1].getId());
-                    System.out.println("4");
+                    //System.out.println("drawing");
+                    //fromTo[0].getShape().setFill(Color.RED);
+                    //fromTo[1].getShape().setFill(Color.BLUE);
                     djkOut = djk;
-                    System.out.println("pre break");
+                    path = djk.pathTo(fromTo[1].getId());
                     break;
                 } else {
                     System.out.println("No route found between \"" + fromTo[0] + "\" and \"" + fromTo[1] + "\"");
+                    fromTo[0] = null;
+                    fromTo[1] = null;
                 }
             }
 
             System.out.print("> ");
             inputString = input.nextLine();
         }
-        System.out.println("post break ->>> " + (djkOut == null));
-        //return path;
-        return djkOut;
+
+        if (inputString.equals("q")) System.exit(0);
+
+        return path;
+        //return djkOut;
     }
 }

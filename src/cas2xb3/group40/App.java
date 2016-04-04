@@ -122,7 +122,9 @@ public class App extends Application {
     }
 
     private void getUserInputThread(Network net, Camera cam, Pane root) {
-        Dijkstra[] djk = {null};
+        ArrayList<Road>[] path = new ArrayList[1];
+
+        //Dijkstra[] djk = {null};
         Service<Void> service = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
@@ -148,6 +150,14 @@ public class App extends Application {
                 //System.out.println(djk[0].pathTo(55) == null);
 
 
+                //djk[0] = StreetSearch.getUserInput(net, cam);
+                //System.out.println("obj == null ? " + (djk[0] == null));
+
+                path[0] = StreetSearch.getUserInput(net, cam);
+                root.getChildren().clear();
+                root.getChildren().addAll(cam.filterVisible(net, path[0]));
+
+                /* // Working block
                 int rand = (int)(10000*Math.random());
                 Dijkstra d = new Dijkstra(net, rand);
                 if (d.hasPathTo(rand)) {
@@ -155,7 +165,7 @@ public class App extends Application {
                     cam.panTo(net, net.get(rand));
                     root.getChildren().clear();
                     root.getChildren().addAll(cam.filterVisible(net, path));
-                }
+                } // Working block */
             }
         });
         service.start();
