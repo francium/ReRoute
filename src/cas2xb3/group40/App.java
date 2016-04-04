@@ -10,7 +10,6 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -79,7 +78,7 @@ public class App extends Application {
                 double mousedy = mouseEvent.getSceneY() - mouseY;
                 cam.pan(mousedx, mousedy);
                 root.getChildren().clear();
-                root.getChildren().addAll(cam.filterVisible(net));
+                root.getChildren().addAll(cam.filterVisible(net, null));
             }
         });
 
@@ -89,11 +88,7 @@ public class App extends Application {
             @Override
             public void handle(KeyEvent keyEvent) {
                 if (keyEvent.getCode() == KeyCode.A) {
-                    Dijkstra djk = new Dijkstra(net, 50);
-                    ArrayList<Road> path = djk.pathTo(55);
-                    System.out.println(path == null);
-                    System.out.println(path.size());
-                    for (Road r: path) System.out.println(r);
+                    getUserInputThread(net, cam, root);
                     return;
                 }
                 if (keyEvent.getCode() == KeyCode.EQUALS) {
@@ -102,16 +97,17 @@ public class App extends Application {
                     cam.zoom(false);
                 }
                 root.getChildren().clear();
-                root.getChildren().addAll(cam.filterVisible(net));
+                root.getChildren().addAll(cam.filterVisible(net, null));
             }
         });
 
+        /*
         // windows resize handler
         //mapScene.widthProperty().addListener(new ChangeListener<Number>() {
         topScene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
                 cam.setResX(newSceneWidth.intValue());
-                root.getChildren().addAll(cam.filterVisible(net));
+                root.getChildren().addAll(cam.filterVisible(net, null));
             }
         });
 
@@ -122,16 +118,18 @@ public class App extends Application {
                 cam.setResY(newSceneHeight.intValue());
             }
         });
+        */
     }
 
-    private void getUserInputThread(Network net) {
+    private void getUserInputThread(Network net, Camera cam, Pane root) {
+        Dijkstra[] djk = {null};
         Service<Void> service = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        StreetSearch.getUserInput(net);
+                        //djk[0] = StreetSearch.getUserInput(net, cam);
 
                         return null;
                     }
@@ -141,7 +139,19 @@ public class App extends Application {
         service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                System.exit(0);
+                System.out.println("here******************");
+                //Road[] path = (Road[])djk[0].pathTo(fromTo[1].getId()).toArray();
+                //Road[] path = (Road[])djk[0].pathTo(10078).toArray();
+                //root.getChildren().clear();
+                //root.getChildren().addAll(cam.filterVisible(net, path));
+                //System.out.println(djk[0] == null);
+                //System.out.println(djk[0].pathTo(55) == null);
+
+
+                Dijkstra d = new Dijkstra(net, 1000);
+                ArrayList<Road> path = d.pathTo(5550);
+                root.getChildren().clear();
+                root.getChildren().addAll(cam.filterVisible(net, path));
             }
         });
         service.start();
@@ -166,7 +176,8 @@ public class App extends Application {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
                 // add shapes to root pane
-                root.getChildren().addAll(cam.filterVisible(net));
+                root.getChildren().clear();
+                root.getChildren().addAll(cam.filterVisible(net, null));
 
                 // parser obj no longer required
                 p.destructor();
@@ -174,7 +185,6 @@ public class App extends Application {
                 //stage.setScene(mapScene);
                 topPane.setCenter(root);
                 topScene.setFill(MAP_BACKGROUND_COLOR);
-                getUserInputThread(net);
             }
         });
         service.start();

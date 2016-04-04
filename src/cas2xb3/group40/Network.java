@@ -153,14 +153,6 @@ public class Network {
             net.addIntersection(a);
         }
 
-        /* for each intersection in network
-           find all intersections on road A
-           find closest 2 intersections
-           if d(1,3) < d(2,3)
-           add both intersections to adjacency
-           if d(1,2) > d(2,3)
-           add only closer node
-           repeat for road B */
         for (Intersection i: net.iterator()) {
             Intersection[] closest1 = net.findClosest(i.getStreets()[0], i);
             Intersection[] closest2 = net.findClosest(i.getStreets()[1], i);

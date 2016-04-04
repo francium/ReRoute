@@ -5,6 +5,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Camera {
@@ -59,6 +60,16 @@ public class Camera {
         maxY += dY/PAN_FACTOR;
     }
 
+    public void panTo(Network net, Intersection i) {
+        double dx = maxX - minX;
+        double dy = maxY - minY;
+        minX = i.getX() - dx/2.0;
+        maxX = i.getX() + dx/2.0;
+        minY = i.getY() - dy/2;
+        maxY = i.getY() + dy/2;
+        filterVisible(net, null);
+    }
+
     public void zoom(boolean in) {
         double dx = maxX - minX;
         double dy = maxY - minY;
@@ -90,7 +101,7 @@ public class Camera {
         return new double[] {resX - resX * i, resY - resY * j};
     }
 
-    public Shape[] filterVisible(Network net) {
+    public Shape[] filterVisible(Network net, ArrayList<Road> path) {
         Intersection[] intsecs = new Intersection[net.V()];
         Shape[] shapes = new Shape[5 * net.V()]; // assume 4 connections per intersection + intersections
         int c = 0;
@@ -110,6 +121,13 @@ public class Camera {
                 }*/
                 intsecs[c] = i;
                 shapes[c++] = i.getShape();
+
+                if (path != null)
+                    for (Road r: path) {
+                        if (r.oneI() == i.getId() || r.otherI() == i.getId()) {
+                            i.getShape().setFill(Color.RED);
+                        }
+                    }
             }
         }
 
@@ -121,6 +139,13 @@ public class Camera {
                 double[] x2y2 = normalizeCoords(j.getX(), j.getY());
                 Line line = new Line(x1y1[0], x1y1[1], x2y2[0], x2y2[1]);
                 shapes[c++] = line;
+                if (path != null)
+                    for (Road r: path) {
+                        if (r.oneI() == i.getId() || r.oneI() == j.getId() &&
+                            r.otherI() == i.getId() || r.oneI() == j.getId()) {
+                            line.setStroke(Color.RED);
+                        }
+                    }
             }
         }
 
