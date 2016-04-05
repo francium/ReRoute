@@ -9,6 +9,8 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,7 +21,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class App extends Application {
@@ -32,6 +37,13 @@ public class App extends Application {
 
     private void initUI(Stage stage) {
         stage.setTitle(TITLE);
+
+        StackPane helpPane = new StackPane();
+        Rectangle rectangle = new Rectangle(500, 50, LOAD_BACKGROUND_COLOR);
+        Text helpText = new Text("S\t\t\tto perform a search\n" +
+                                 "H\t\t\tto toggle help");
+        helpPane.getChildren().add(rectangle);
+        helpPane.getChildren().add(helpText);
 
         BorderPane topPane = new BorderPane();
         Scene topScene = new Scene(topPane, 500, 500, LOAD_BACKGROUND_COLOR);
@@ -58,7 +70,7 @@ public class App extends Application {
             // different aspect ratio
             //Camera cam = new Camera(122.30, 47.60, 122.43, 47.76);
 
-        startLoadingThread(net, p, root, cam, topPane, topScene);
+        startLoadingThread(net, p, root, cam, topPane, topScene, helpPane);
 
         // mouse click handler
         //mapScene.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -88,17 +100,27 @@ public class App extends Application {
         topScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
-                if (keyEvent.getCode() == KeyCode.A) {
-                    getUserInputThread(net, cam, root);
-                    return;
-                }
-                if (keyEvent.getCode() == KeyCode.EQUALS) {
+                if (keyEvent.getCode() == KeyCode.H) {
+                    if (loaded)
+                        if (topPane.getBottom() == helpPane) {
+                            topPane.setBottom(null);
+                        } else
+                            topPane.setBottom(helpPane);
+
+                } else if (keyEvent.getCode() == KeyCode.S) {
+                    getUserInputThread(net, cam, root, topPane);
+
+                } else if (keyEvent.getCode() == KeyCode.EQUALS) {
                     cam.zoom(true);
+                    root.getChildren().clear();
+                    root.getChildren().addAll(cam.filterVisible(net, null));
+
                 } else if (keyEvent.getCode() == KeyCode.MINUS) {
                     cam.zoom(false);
+                    root.getChildren().clear();
+                    root.getChildren().addAll(cam.filterVisible(net, null));
+
                 }
-                root.getChildren().clear();
-                root.getChildren().addAll(cam.filterVisible(net, null));
             }
         });
 
@@ -126,7 +148,7 @@ public class App extends Application {
         });
     }
 
-    private void startLoadingThread(Network net, Parser p, Pane root, Camera cam, BorderPane topPane, Scene topScene) {
+    private void startLoadingThread(Network net, Parser p, Pane root, Camera cam, BorderPane topPane, Scene topScene, Pane helpPane) {
         Service<Void> service = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
@@ -160,6 +182,8 @@ public class App extends Application {
         service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
+                net.sort();
+
                 // add shapes to root pane
                 root.getChildren().clear();
                 root.getChildren().addAll(cam.filterVisible(net, null));
@@ -169,6 +193,7 @@ public class App extends Application {
 
                 //stage.setScene(mapScene);
                 topPane.setCenter(root);
+                topPane.setBottom(helpPane);
                 topScene.setFill(MAP_BACKGROUND_COLOR);
                 loaded = true;
             }
@@ -176,7 +201,7 @@ public class App extends Application {
         service.start();
     }
 
-    private void getUserInputThread(Network net, Camera cam, Pane root) {
+    private void getUserInputThread(Network net, Camera cam, Pane root, BorderPane topPane) {
         ArrayList<Road>[] path = new ArrayList[1];
 
         //Dijkstra[] djk = {null};
@@ -211,16 +236,23 @@ public class App extends Application {
                 path[0] = StreetSearch.getUserInput(net, cam);
                 root.getChildren().clear();
                 root.getChildren().addAll(cam.filterVisible(net, path[0]));
+                topPane.setBottom(null);
+
                 Road prev = path[0].get(0);
+
+                // print intersections
                 for (int i=1; i<path[0].size(); i++) {
-                    System.out.println(path[0].get(i));
                     // work in progress
-                    /*
                     if (prev.oneI() == path[0].get(i).oneI())
-                        System.out.println(path[0].get(i));
-                    else if (prev.oneI() == path[0].get(i).oneI())
-                        System.out.println(path[0].get(i));
-                        */
+                        System.out.println(path[0].get(i).getIntsec1());
+                    else if (prev.oneI() == path[0].get(i).otherI())
+                        System.out.println(path[0].get(i).getIntsec2());
+                    else if (prev.otherI() == path[0].get(i).oneI())
+                        System.out.println(path[0].get(i).getIntsec1());
+                    else if (prev.otherI() == path[0].get(i).otherI())
+                        System.out.println(path[0].get(i).getIntsec2());
+
+                    prev = path[0].get(i);
                 }
 
                 /* // Working block

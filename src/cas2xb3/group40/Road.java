@@ -15,6 +15,14 @@ public class Road implements Serializable {
 		this.wt = wt;
 	}
 
+    public Intersection getIntsec1() {
+        return intsec1;
+    }
+
+    public Intersection getIntsec2() {
+        return intsec2;
+    }
+
 	public int oneI(){
 		return this.i1;
 	}

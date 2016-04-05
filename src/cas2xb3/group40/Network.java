@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class Network implements Serializable {
 
     private Intersection[] intsecs;
+    private Intersection[] intsecsSortedStreet, intsecsSortedX, intsecsSortedY;
     private int nV;
     private int nE;
 
@@ -24,21 +25,30 @@ public class Network implements Serializable {
         return intsecs[i];
     }
 
-    /*
-    public void addEdge(Intersection v, Intersection w){
-        //Add an edge from v to w (symmetrically).
-    	checkAdd(v);
-    	checkAdd(w);
-    	this.adj.get(v.getId()).add(w);
-    	if (v != w){
-    		this.adj.get(w.getID()).add(v);
-    	}
-    	this.nE++;
-    }
-    */
+    public void sort() {
+        intsecsSortedStreet = intsecs.clone();
+        intsecsSortedX = intsecs.clone();
+        intsecsSortedY = intsecs.clone();
 
-    public Intersection[] iterator(){
+        MergeSort.sort(intsecsSortedStreet, Sortable.STREET);
+        MergeSort.sort(intsecsSortedX, Sortable.X);
+        MergeSort.sort(intsecsSortedY, Sortable.Y);
+    }
+
+    public Intersection[] iterator() {
         return intsecs.clone();
+    }
+
+    public Intersection[] iteratorSortedStreet() {
+        return intsecsSortedStreet.clone();
+    }
+
+    public Intersection[] iteratorSortedX() {
+        return intsecsSortedStreet.clone();
+    }
+
+    public Intersection[] iteratorSortedY() {
+        return intsecsSortedStreet.clone();
     }
 
     public int V(){
@@ -50,66 +60,6 @@ public class Network implements Serializable {
         //Returns the number of edges in the graph.
         return nE;
     }
-
-    /*
-    private Intersection get(String streets){
-    	for (Intersection w: intsecs){
-    		if (w.getId() == id) return w;
-    	}
-    	return null;
-    }
-
-    private void checkAdd(Intersection v){
-    	for(Intersection w : this.all){
-    		if (v.getID() == w.getID()) return;
-    	}
-    	all.add(v);
-    }
-
-    public String toString(){
-        String s = this.V() + " intersections, " + this.E() + " edges\n";
-        String t = "Intersections include: ";
-        for (int i = 0; i < all.size(); i++){
-        	t += all.get(i) + " ";
-        }
-        t += "\n";
-        s += t;
-        for (int v = 0; v < this.V(); ++v){
-            s += find(v) + ": ";
-            for (Intersection w : this.adj(v))
-                s += w + " ";
-            s += "\n";
-        }
-        return s;
-    }
-    */
-
-    /*
-    public Iterator<Network> iterator() {
-        return new ElementIterator();
-    }
-
-    class ElementIterator implements Iterator {
-
-        private int index = 0;
-
-        @Override
-        public boolean hasNext() {
-            return index < V();
-        }
-
-        @Override
-        public Intersection next() {
-            return get(index++);
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
-    }
-    */
 
     public Intersection[] findClosest(String street, Intersection intsec) {
         Intersection first = null;

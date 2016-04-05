@@ -3,7 +3,6 @@ package cas2xb3.group40;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -32,6 +31,25 @@ public class Intersection implements Serializable {
 
     public void newCircle() {
         shape = new Circle(0, 0, 0, Color.BLACK);
+    }
+
+    public int compareTo(Intersection other, Sortable s) {
+        if (s == Sortable.STREET) {
+            return (other.s1 + other.s2).compareTo(s1 + s2);
+
+        } else if (s == Sortable.X) {
+            if (other.x > x) return -1;
+            else if (other.x < x) return 1;
+            else return 0;
+
+        } else if (s == Sortable.Y) {
+            if (other.y > y) return -1;
+            else if (other.y < y) return 1;
+            else return 0;
+        }
+
+        System.out.println("this statement should never be reached");
+        return 0;
     }
 
     public boolean isVisible() {
