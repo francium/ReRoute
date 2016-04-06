@@ -158,6 +158,10 @@ public class Network implements Serializable {
             net.addIntersection(a);
         }
 
+        statusLabel.setText("Sorting data");
+        net.sort();
+
+
         int c = 0;
         int sz = net.V();
         for (Intersection i: net.iterator()) {

@@ -162,9 +162,6 @@ public class App extends Application {
         service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                statusLabel.setText("Sorting data");
-                net.sort();
-
                 // add shapes to root pane
                 root.getChildren().clear();
                 root.getChildren().addAll(cam.filterVisible(net, null));
