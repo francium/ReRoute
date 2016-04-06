@@ -103,28 +103,4 @@ public class Dijkstra {
 		}
 		return reverse;
 	}
-	public static void main(String[] args){
-		  Parser p = new Parser(0);
-	        Network net = new Network(p.numLines());
-	        Network.buildNetwork(net, p);
-            System.out.println(net.get(1).getShape() == null);
-            /*
-		    Dijkstra D = new Dijkstra(net,50);
-	        ArrayList<Road> path = new ArrayList<Road>();
-	        //for(int i = 0; i < 1; i++){
-	        //	if(D.hasPathTo(i)){
-	        		path = D.pathTo(55);
-	        //		break;
-	        //	}
-	        //}
-	        if (path.isEmpty()){
-	        	System.out.println("No route");
-	        }else{
-	        	for(Road r : path){
-	        		System.out.println(r);
-	        	}
-	        }
-	        */
-
-	}
 }

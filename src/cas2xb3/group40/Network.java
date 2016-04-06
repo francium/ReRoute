@@ -2,6 +2,7 @@ package cas2xb3.group40;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 
 import java.io.Serializable;
 
@@ -44,11 +45,11 @@ public class Network implements Serializable {
     }
 
     public Intersection[] iteratorSortedX() {
-        return intsecsSortedStreet.clone();
+        return intsecsSortedX.clone();
     }
 
     public Intersection[] iteratorSortedY() {
-        return intsecsSortedStreet.clone();
+        return intsecsSortedY.clone();
     }
 
     public int V(){
@@ -66,6 +67,7 @@ public class Network implements Serializable {
         double firstDist = Double.POSITIVE_INFINITY;
         Intersection second = null;
 
+        //  WORKING BLOCK
         for (int i=1; i<intsecs.length; i++) {
             double dist = distTo(intsec, intsecs[i]);
             boolean isSame = (intsec == intsecs[i]);
@@ -78,8 +80,62 @@ public class Network implements Serializable {
             }
         }
 
+        /*
+        int intsecIndex = BinarySearch.index(intsec, intsecsSortedX, Sortable.X);
+        Intersection[] closestX = linearClosest(street, intsec, intsecIndex, intsecsSortedX.length, Sortable.X);
+        Intersection[] closestY = linearClosest(street, intsec, intsecIndex, intsecsSortedY.length, Sortable.Y);
+
+        for (Intersection i: new Intersection[] {closestX[0], closestX[1], closestY[0], closestY[1]}) {
+            double dist = distTo(intsec, i);
+            boolean isSame = (intsec == i);
+            if (dist < firstDist && !isSame && dist < 0.005) {
+                second = first;
+                first = i;
+                firstDist = dist;
+            }
+        }
+        */
+
         if (first == null) return new Intersection[] {};
         if (second == null) return new Intersection[] {first};
+        return new Intersection[] {first, second};
+    }
+
+    public Intersection[] linearClosest(String street, Intersection intsec, int intsecIndex, int length, Sortable s) {
+        final int LIMIT = 500;
+        int lo = ((intsecIndex - LIMIT) > 0) ? (intsecIndex - 500) : 0;
+        int mid = intsecIndex;
+        int hi = ((intsecIndex + LIMIT) < length) ? (intsecIndex - 500) : 0;
+
+        Intersection first = null;
+        double firstDist = Double.POSITIVE_INFINITY;
+        Intersection second = null;
+
+        Intersection[] sortedArray = (s == Sortable.X) ? intsecsSortedX : intsecsSortedY;
+
+        for (int i=mid; i>lo; i--) {
+            double dist = distTo(intsec, sortedArray[i]);
+            boolean isSame = (intsec == sortedArray[i]);
+            boolean isStreet = sortedArray[i].getStreets()[0].equals(street) || sortedArray[i].getStreets()[1].equals(street);
+
+            if (dist < firstDist && !isSame && isStreet && dist < 0.005) {
+                second = first;
+                first = sortedArray[i];
+                firstDist = dist;
+            }
+        }
+
+        for (int i=mid; i<hi; i++) {
+            double dist = distTo(intsec, sortedArray[i]);
+            boolean isSame = (intsec == sortedArray[i]);
+            boolean isStreet = sortedArray[i].getStreets()[0].equals(street) || sortedArray[i].getStreets()[1].equals(street);
+
+            if (dist < firstDist && !isSame && isStreet && dist < 0.005) {
+                second = first;
+                first = sortedArray[i];
+                firstDist = dist;
+            }
+        }
         return new Intersection[] {first, second};
     }
 
@@ -91,7 +147,8 @@ public class Network implements Serializable {
         return Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
     }
 
-    public static void buildNetwork(Network net, Parser p) {
+    public static void buildNetwork(Network net, Parser p, Text statusLabel) {
+        statusLabel.setText("Building intersections");
         for (int i = 0; i < p.numLines(); i++) {
             String[] data = p.readLine();
             Intersection a = new Intersection(data[8], data[9],
@@ -101,7 +158,12 @@ public class Network implements Serializable {
             net.addIntersection(a);
         }
 
+        int c = 0;
+        int sz = net.V();
         for (Intersection i: net.iterator()) {
+            if (c % 50 == 0)
+                statusLabel.setText("Building streets " + (c++) + "/" + sz);
+            else c++;
             Intersection[] closest1 = net.findClosest(i.getStreets()[0], i);
             Intersection[] closest2 = net.findClosest(i.getStreets()[1], i);
             adjacentLogic(net, i, closest1);

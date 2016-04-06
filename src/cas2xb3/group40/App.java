@@ -49,17 +49,18 @@ public class App extends Application {
         Scene topScene = new Scene(topPane, 500, 500, LOAD_BACKGROUND_COLOR);
 
         StackPane load = new StackPane();
-        //Scene loadScene = new Scene(load, 500, 500, LOAD_BACKGROUND_COLOR);
 
         Image imgLogo = new Image("file:data/logo.png");
         ImageView imgViewLogo = new ImageView(imgLogo);
         load.getChildren().add(imgViewLogo);
 
+        Text statusLabel = new Text();
+        load.getChildren().add(statusLabel);
+        StackPane.setAlignment(statusLabel, Pos.BOTTOM_CENTER);
+
         topPane.setCenter(load);
 
         Pane root = new Pane();
-        //Scene mapScene = new Scene(root, 500, 500, MAP_BACKGROUND_COLOR);
-        //stage.setScene(loadScene);
         stage.setScene(topScene);
 
         stage.show();
@@ -70,7 +71,7 @@ public class App extends Application {
             // different aspect ratio
             //Camera cam = new Camera(122.30, 47.60, 122.43, 47.76);
 
-        startLoadingThread(net, p, root, cam, topPane, topScene, helpPane);
+        startLoadingThread(net, p, root, cam, topPane, topScene, helpPane, statusLabel);
 
         // mouse click handler
         //mapScene.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -83,7 +84,6 @@ public class App extends Application {
         });
 
         // pan handler
-        //mapScene.setOnMouseReleased(new EventHandler<MouseEvent>() {
         topScene.setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -96,7 +96,6 @@ public class App extends Application {
         });
 
         // zoom handler
-        //mapScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
         topScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
@@ -125,7 +124,6 @@ public class App extends Application {
         });
 
         // windows resize handler
-        //mapScene.widthProperty().addListener(new ChangeListener<Number>() {
         topScene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
                 if (loaded) {
@@ -137,7 +135,6 @@ public class App extends Application {
         });
 
         // window resize handler
-        //mapScene.heightProperty().addListener(new ChangeListener<Number>() {
         topScene.heightProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
                 if (loaded)
@@ -148,31 +145,14 @@ public class App extends Application {
         });
     }
 
-    private void startLoadingThread(Network net, Parser p, Pane root, Camera cam, BorderPane topPane, Scene topScene, Pane helpPane) {
+    private void startLoadingThread(Network net, Parser p, Pane root, Camera cam, BorderPane topPane, Scene topScene, Pane helpPane, Text statusLabel) {
         Service<Void> service = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        /*
-                            // try loading
-                            //Network netLoad = Util.load();
-                            Network netLoad = null;
-
-                            if (netLoad != null) {
-                                // assign loaded network to argument network
-                                Network.assignNetwork(net, netLoad);
-                            } else {
-                                // if loading fails, build network
-                                Network.buildNetwork(net, p);
-                                System.out.println("1");
-                                Util.save(net);
-                                System.out.println("2");
-                            }
-                        */
-
-                        Network.buildNetwork(net, p);
+                        Network.buildNetwork(net, p, statusLabel);
 
                         return null;
                     }
@@ -182,6 +162,7 @@ public class App extends Application {
         service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
+                statusLabel.setText("Sorting data");
                 net.sort();
 
                 // add shapes to root pane
